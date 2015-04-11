@@ -5,6 +5,7 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>HappyHack</name>
   <description>Happy hackaton</description>
+  <packaging>jar</packaging>
   <dependencies>
   <dependency>
 	<groupId>org.apache.storm</groupId>

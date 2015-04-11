@@ -30,6 +30,7 @@ public class NotificationBolt implements IRichBolt {
 		if(inAppNotify == null) inAppNotify = new WeakHashMap<String, String>();
 		if ("Mobile".equals(event_type)) {
 			inAppNotify.put(userID, event);
+			System.out.println("Its mobile");
 		}
 		collector.ack(tuple);
 	}

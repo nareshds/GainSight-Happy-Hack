@@ -14,7 +14,7 @@ public class MongoDBQuery {
 	private static MongoClient mongoClient = null;
 	private static DB db =null;
 	public MongoDBQuery() throws Exception{
-		mongoClient = new MongoClient("localhost", 27017);
+		mongoClient = new MongoClient("192.168.0.76", 27017);
 		db = mongoClient.getDB("gainsight");
 	}
 	

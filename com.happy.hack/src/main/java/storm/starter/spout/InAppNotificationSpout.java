@@ -14,23 +14,23 @@ import backtype.storm.utils.Utils;
 public class InAppNotificationSpout implements IRichSpout {
 	private SpoutOutputCollector collector;
 	private TopologyContext context;
-	public static LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<String>(1000);;
+	public static LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<String>(1000);
 
 	public void open(Map conf, TopologyContext context,
 			SpoutOutputCollector collector) {
 		this.context = context;
 		this.collector = collector;
+		//queue = (LinkedBlockingQueue<String>)conf.get("queue"); 
 	}
 
 	public void nextTuple() {
-
 		String ret = queue.poll();
 		if (ret == null) {
 			Utils.sleep(50);
 		} else {
+			System.out.println("Polled data "+ret);
 			collector.emit(new Values(ret), ret);
 		}
-
 	}
 
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
