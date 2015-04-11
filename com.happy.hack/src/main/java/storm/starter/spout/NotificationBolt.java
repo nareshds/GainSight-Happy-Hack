@@ -23,7 +23,6 @@ public class NotificationBolt implements IRichBolt {
 	}
 
 	public void execute(Tuple tuple) {
-		// TODO Auto-generated method stub
 		JSONObject object = (JSONObject) tuple;
 		String userID = object.get("User ID").toString();
 		String event = object.get("Event").toString();
