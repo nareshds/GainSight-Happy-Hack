@@ -1,6 +1,9 @@
 package storm.starter.spout;
 
+import java.lang.ref.WeakReference;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.codehaus.jettison.json.JSONObject;
@@ -16,7 +19,7 @@ import backtype.storm.utils.Utils;
 public class MailNotifySpout implements IRichSpout{
 	private SpoutOutputCollector collector;
 	private TopologyContext context;
-	public static LinkedBlockingQueue<JSONObject> queue = new LinkedBlockingQueue<JSONObject>(1000);
+	public static BlockingQueue<JSONObject> queue = new LinkedBlockingQueue<JSONObject>();
 
 	public void open(Map conf, TopologyContext context,
 			SpoutOutputCollector collector) {
@@ -26,12 +29,16 @@ public class MailNotifySpout implements IRichSpout{
 	}
 
 	public void nextTuple() {
-		JSONObject ret = queue.poll();
+		try{
+		JSONObject ret = queue.take();
 		if (ret == null) {
-			Utils.sleep(50);
+			//Utils.sleep(50);
 		} else {
 			System.out.println("Polled data "+ret);
 			collector.emit(new Values(ret), ret);
+		}
+		}catch(Exception ex){
+			ex.printStackTrace();
 		}
 	}
 

@@ -3,11 +3,7 @@ package storm.starter.spout;
 
 import java.net.UnknownHostException;
 
-
-
-
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -99,11 +95,11 @@ public class MongoDBQuery {
 	}
 	
 	
-	public void setEvent(JSONObject eventObj){
+	public void setEvent(org.codehaus.jettison.json.JSONObject eventObj){
 		DBCollection coll = db.getCollection("notification_table");
-		
+		try{
 		BasicDBObject fields = new BasicDBObject();
-		fields.put("id", eventObj.get("userId"));
+		fields.put("id", eventObj.get("userid"));
 		DBCursor cursor = coll.find(fields);
 		if(cursor == null){
 			DBObject dbObj =(DBObject)JSON.parse(eventObj.toString());
@@ -137,6 +133,9 @@ public class MongoDBQuery {
 				 searchArray.add(eventObj.get("search string"));
 				 update.put("search string", searchArray);
 			 }
+		}
+		}catch(Exception ex){
+			ex.printStackTrace();
 		}
 		
 	}

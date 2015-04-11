@@ -1,5 +1,7 @@
 package com.happy.hackweb.rest;
 
+import java.lang.ref.WeakReference;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -7,8 +9,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jettison.json.JSONException;
-
 import org.codehaus.jettison.json.JSONObject;
 
 import storm.starter.spout.InAppNotificationSpout;
@@ -63,14 +65,21 @@ public class HappyHackJSONService {
 		if (null == inAppNot) {
 			setTopologies();
 		}
-		System.out.println("request is===" + request);
+		//System.out.println("request is===" + request);
+		if(request.replaceAll(" ", "").replaceAll("\n", "").contains(":}")){
+			
+			request =request.replace("\"price\" :", "\"price\" : -1");
+			System.out.println(request);
+		}
 		try {
+			
 			JSONObject jsonObject = new JSONObject(request);
+				
 			inAppNot.queue.put(jsonObject);
 			mailSpout.queue.put(new JSONObject(request));
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

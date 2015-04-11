@@ -2,7 +2,8 @@ package storm.starter.spout;
 
 import java.util.Map;
 
-import org.json.simple.JSONObject;
+import org.codehaus.jettison.json.JSONObject;
+
 
 import com.mongodb.DBObject;
 
@@ -21,10 +22,10 @@ public class MailingBolt implements IRichBolt{
 	}
 
 	public void execute(Tuple input) {
-		// TODO Auto-generated method stub
-		JSONObject object = (JSONObject) input;
-		String userId = object.get("id").toString();
+		JSONObject object = (JSONObject) input.getValues().get(0);
+		
 		try {
+			String userId = object.get("userid").toString();
 			DBObject userdbObj = new MongoDBQuery().getUser(userId);
 			new MongoDBQuery().setEvent(object);
 			DBObject mailObject = new MongoDBQuery().getEvent(userId);
