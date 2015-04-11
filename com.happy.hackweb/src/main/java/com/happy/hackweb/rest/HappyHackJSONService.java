@@ -19,13 +19,14 @@ import backtype.storm.Config;
 import backtype.storm.LocalCluster;
 import backtype.storm.topology.TopologyBuilder;
 
-@Path("/activity")
+@Path("activity")
 public class HappyHackJSONService {
 
 	private static LocalCluster cluster = new LocalCluster();
 
 	private static InAppNotificationSpout inAppSpout = new InAppNotificationSpout();
 	private static void setTopologies() {
+		try{
 		Config config = new Config();
 		config.setDebug(true);
 		config.put(Config.TOPOLOGY_MAX_SPOUT_PENDING, 1);
@@ -35,7 +36,10 @@ public class HappyHackJSONService {
 		builder.setBolt("inApp-bolt", new NotificationBolt()).shuffleGrouping("inApp-spout");
 		
 		
-		cluster.submitTopology("HelloStorm", config, builder.createTopology());
+		cluster.submitTopology("InAppTopology", config, builder.createTopology());
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
 	}
 
 	@POST
@@ -62,6 +66,7 @@ public class HappyHackJSONService {
 
 		System.out.println("Stopping the cluster");
 		cluster.shutdown();
+		inAppSpout = null;
 		return Response.status(200).entity("").build();
 	}
 
