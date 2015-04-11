@@ -1,20 +1,19 @@
 package com.happy.hackweb.rest;
 
+import java.util.concurrent.LinkedBlockingQueue;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
+import org.codehaus.jettison.json.JSONException;
+import org.json.simple.JSONObject;
+
 import storm.starter.spout.InAppNotificationSpout;
-import storm.starter.spout.LineReaderSpout;
 import storm.starter.spout.NotificationBolt;
-import storm.starter.spout.WordCounterBolt;
-import storm.starter.spout.WordSpitterBolt;
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
 import backtype.storm.topology.TopologyBuilder;
@@ -24,15 +23,18 @@ public class HappyHackJSONService {
 
 	private static LocalCluster cluster = new LocalCluster();
 
-	private static InAppNotificationSpout inAppSpout = new InAppNotificationSpout();
+	
+	
+	private static InAppNotificationSpout inAppNot =null;
 	private static void setTopologies() {
 		try{
+			inAppNot =new InAppNotificationSpout();
 		Config config = new Config();
 		config.setDebug(true);
 		config.put(Config.TOPOLOGY_MAX_SPOUT_PENDING, 1);
 
 		TopologyBuilder builder = new TopologyBuilder();
-		builder.setSpout("inApp-spout", inAppSpout);
+		builder.setSpout("inApp-spout", inAppNot);
 		builder.setBolt("inApp-bolt", new NotificationBolt()).shuffleGrouping("inApp-spout");
 		
 		
@@ -46,14 +48,17 @@ public class HappyHackJSONService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response createXmlEventsInJSON(String request) {
 
-		if(null == inAppSpout){
+		if(null == inAppNot){
 			setTopologies();
 		}
 		System.out.println("request is===" + request);
-		
 		try {
-			inAppSpout.queue.put(request);
+			org.codehaus.jettison.json.JSONObject jsonObject  = new org.codehaus.jettison.json.JSONObject(request);
+			inAppNot.queue.put(jsonObject);
 		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -62,11 +67,11 @@ public class HappyHackJSONService {
 	}
 
 	@GET
+	@Path("shutdown")
 	public Response shutDown() {
 
 		System.out.println("Stopping the cluster");
 		cluster.shutdown();
-		inAppSpout = null;
 		return Response.status(200).entity("").build();
 	}
 
