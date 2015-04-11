@@ -27,7 +27,7 @@ public class ActiveGeographyCountBolt implements IRichBolt {
 	
 	public void execute(Tuple tuple) {
 		// TODO Auto-generated method stub
-		org.codehaus.jettison.json.JSONObject object=(org.codehaus.jettison.json.JSONObject)tuple;
+		org.codehaus.jettison.json.JSONObject object=(org.codehaus.jettison.json.JSONObject)tuple.getValues().get(0);
 		int count=0;
 		//java.util.Date date= new java.util.Date();
 		try {
