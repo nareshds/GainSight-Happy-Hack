@@ -14,7 +14,7 @@ import backtype.storm.utils.Utils;
 public class InAppNotificationSpout implements IRichSpout {
 	private SpoutOutputCollector collector;
 	private TopologyContext context;
-	LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<String>(1000);;
+	public static LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<String>(1000);;
 
 	public void open(Map conf, TopologyContext context,
 			SpoutOutputCollector collector) {
