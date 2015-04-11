@@ -9,7 +9,6 @@ import javax.ws.rs.core.Response;
 
 import org.codehaus.jettison.json.JSONException;
 
-
 import org.codehaus.jettison.json.JSONObject;
 
 import storm.starter.spout.InAppNotificationSpout;
@@ -25,31 +24,34 @@ public class HappyHackJSONService {
 
 	private static LocalCluster cluster = new LocalCluster();
 
-	
-	
-	private static InAppNotificationSpout inAppNot =null;
+	private static InAppNotificationSpout inAppNot = null;
 	private static MailNotifySpout mailSpout = null;
-	private static void setTopologies() {
-		try{
-			inAppNot =new InAppNotificationSpout();
-			mailSpout = new MailNotifySpout();
-		
-			Config config = new Config();
-		config.setDebug(true);
-		config.put(Config.TOPOLOGY_MAX_SPOUT_PENDING, 1);
 
-		TopologyBuilder builder = new TopologyBuilder();
-		builder.setSpout("inApp-spout", inAppNot);
-		builder.setBolt("inApp-bolt", new NotificationBolt()).shuffleGrouping("inApp-spout");
-		
-		TopologyBuilder mailBuilder = new TopologyBuilder();
-		mailBuilder.setSpout("mail-spout", mailSpout);
-		mailBuilder.setBolt("mail-bolt", new MailingBolt()).shuffleGrouping("mail-spout");
-		
-		cluster.submitTopology("InAppTopology", config, builder.createTopology());
-		cluster.submitTopology("MailTopology", config, mailBuilder.createTopology());
-		
-		}catch(Exception ex){
+	private static void setTopologies() {
+		try {
+			inAppNot = new InAppNotificationSpout();
+			mailSpout = new MailNotifySpout();
+
+			Config config = new Config();
+			config.setDebug(false);
+			config.put(Config.TOPOLOGY_MAX_SPOUT_PENDING, 1);
+
+			TopologyBuilder builder = new TopologyBuilder();
+			builder.setSpout("inApp-spout", inAppNot);
+			builder.setBolt("inApp-bolt", new NotificationBolt())
+					.shuffleGrouping("inApp-spout");
+
+			TopologyBuilder mailBuilder = new TopologyBuilder();
+			mailBuilder.setSpout("mail-spout", mailSpout);
+			mailBuilder.setBolt("mail-bolt", new MailingBolt())
+					.shuffleGrouping("mail-spout");
+
+			cluster.submitTopology("InAppTopology", config,
+					builder.createTopology());
+			cluster.submitTopology("MailTopology", config,
+					mailBuilder.createTopology());
+
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
@@ -58,12 +60,12 @@ public class HappyHackJSONService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response createXmlEventsInJSON(String request) {
 
-		if(null == inAppNot){
+		if (null == inAppNot) {
 			setTopologies();
 		}
 		System.out.println("request is===" + request);
 		try {
-			JSONObject jsonObject  = new JSONObject(request);
+			JSONObject jsonObject = new JSONObject(request);
 			inAppNot.queue.put(jsonObject);
 			mailSpout.queue.put(new JSONObject(request));
 		} catch (InterruptedException e) {

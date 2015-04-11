@@ -16,7 +16,8 @@ import backtype.storm.tuple.Tuple;
 public class NotificationBolt implements IRichBolt {
 	private OutputCollector collector;
 	private WeakHashMap<String, String> inAppNotify;
-
+	
+	
 	public void cleanup() {
 		for (Map.Entry<String, String> entry : inAppNotify.entrySet()) {
 			System.out.println(entry.getKey() + "==== " + entry.getValue());
@@ -30,7 +31,11 @@ public class NotificationBolt implements IRichBolt {
 			String event = object.get("event").toString();
 			String event_type = object.get("eventType").toString();
 			if(inAppNotify == null) inAppNotify = new WeakHashMap<String, String>();
+<<<<<<< Updated upstream
 			
+=======
+						
+>>>>>>> Stashed changes
 			if ("Mobile".equals(event_type) && ("AddToCart".equals(event)||"RemoveFromCart".equals(event)||"OrderPlaced".equals(event))) {
 				MongoDBQuery.inAppNotification(object);
 				inAppNotify.put(userID, object.toString());
