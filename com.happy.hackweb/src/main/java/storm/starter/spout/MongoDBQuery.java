@@ -1,18 +1,28 @@
 package storm.starter.spout;
 
+import java.net.UnknownHostException;
+
+import org.json.simple.JSONObject;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.util.JSON;
 
 public class MongoDBQuery {
 	private static MongoClient mongoClient = null;
 	private static DB db =null;
-	public MongoDBQuery() throws Exception{
-		mongoClient = new MongoClient("192.168.0.76", 27017);
-		db = mongoClient.getDB("gainsight");
+	static{
+		try {
+			mongoClient = new MongoClient("127.0.0.1", 27017);
+			db = mongoClient.getDB("gainsight");
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	
@@ -59,6 +69,13 @@ public class MongoDBQuery {
 			dbObject = dbCursor.next();
 		}
 		return dbObject;
+	}
+	
+	public static void inAppNotification(org.codehaus.jettison.json.JSONObject jsonObj){
+		DBCollection coll = db.getCollection("inApp_notify");
+		System.out.println("Sending to MongoDB"+jsonObj.toString());
+		DBObject dbObj =(DBObject)JSON.parse(jsonObj.toString());
+		coll.insert(dbObj);
 	}
 	
 	public void setEvent(String userId){
