@@ -10,6 +10,8 @@ import javax.ws.rs.core.Response;
 import org.codehaus.jettison.json.JSONException;
 
 
+import org.codehaus.jettison.json.JSONObject;
+
 import storm.starter.spout.InAppNotificationSpout;
 import storm.starter.spout.MailNotifySpout;
 import storm.starter.spout.MailingBolt;
@@ -61,7 +63,7 @@ public class HappyHackJSONService {
 		}
 		System.out.println("request is===" + request);
 		try {
-			org.codehaus.jettison.json.JSONObject jsonObject  = new JSONObject(request);
+			JSONObject jsonObject  = new JSONObject(request);
 			inAppNot.queue.put(jsonObject);
 			mailSpout.queue.put(new JSONObject(request));
 		} catch (InterruptedException e) {
