@@ -26,7 +26,7 @@ public class MailingBolt implements IRichBolt{
 		String userId = object.get("id").toString();
 		try {
 			DBObject userdbObj = new MongoDBQuery().getUser(userId);
-			
+			new MongoDBQuery().setEvent(object);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
