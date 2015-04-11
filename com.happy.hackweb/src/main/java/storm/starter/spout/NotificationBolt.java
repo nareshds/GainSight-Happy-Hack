@@ -31,7 +31,6 @@ public class NotificationBolt implements IRichBolt {
 			String event_type = object.get("eventType").toString();
 			if(inAppNotify == null) inAppNotify = new WeakHashMap<String, String>();
 			
-			
 			if ("Mobile".equals(event_type) && ("AddToCart".equals(event)||"RemoveFromCart".equals(event)||"OrderPlaced".equals(event))) {
 				MongoDBQuery.inAppNotification(object);
 				inAppNotify.put(userID, object.toString());

@@ -76,6 +76,21 @@ public class MongoDBQuery {
 		return dbObject;
 	}
 	
+	public DBObject getEvent(String userId){
+		DBCollection coll = db.getCollection("notification_table");
+		
+		BasicDBObject fields = new BasicDBObject();
+		fields.put("id", userId);
+		DBCursor dbCursor = coll.find(fields);
+		DBObject dbObject = null;
+		while(dbCursor.hasNext()){
+			dbObject = dbCursor.next();
+			System.out.println("+++++Retreving form created table+++++");
+			System.out.println(dbObject.get("time"));
+		}
+		return dbObject;
+	}
+	
 	public static void inAppNotification(org.codehaus.jettison.json.JSONObject jsonObj){
 		DBCollection coll = db.getCollection("inApp_notify");
 		System.out.println("Sending to MongoDB"+jsonObj.toString());
