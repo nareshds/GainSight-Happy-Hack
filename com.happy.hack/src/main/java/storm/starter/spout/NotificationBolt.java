@@ -37,18 +37,15 @@ public class NotificationBolt implements IRichBolt {
 
 	public void prepare(Map stormConf, TopologyContext context,
 			OutputCollector collector) {
-		// TODO Auto-generated method stub
 		this.collector = collector;
 	}
 
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
-		// TODO Auto-generated method stub
 		declarer.declare(new Fields("word"));
 
 	}
 
 	public Map<String, Object> getComponentConfiguration() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
