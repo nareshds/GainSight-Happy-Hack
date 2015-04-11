@@ -40,8 +40,7 @@ public class NotificationBolt implements IRichBolt {
 	}
 
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
-		declarer.declare(new Fields("word"));
-
+		declarer.declare(new Fields("notification"));
 	}
 
 	public Map<String, Object> getComponentConfiguration() {
