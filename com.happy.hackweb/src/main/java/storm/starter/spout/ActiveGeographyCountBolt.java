@@ -20,7 +20,7 @@ import backtype.storm.topology.IRichBolt;
 import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.tuple.Tuple;
 
-public class ActiveGeographyCount implements IRichBolt {
+public class ActiveGeographyCountBolt implements IRichBolt {
 
 	private MongoDBQuery dbQuery=null;
 	private WeakHashMap<String, String> userIDWithTimeStamp;;
