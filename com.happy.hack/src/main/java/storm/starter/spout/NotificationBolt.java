@@ -17,11 +17,9 @@ public class NotificationBolt implements IRichBolt {
 	private WeakHashMap<String, String> inAppNotify;
 
 	public void cleanup() {
-		// TODO Auto-generated method stub
 		for (Map.Entry<String, String> entry : inAppNotify.entrySet()) {
 			System.out.println(entry.getKey() + " : " + entry.getValue());
 		}
-
 	}
 
 	public void execute(Tuple tuple) {
