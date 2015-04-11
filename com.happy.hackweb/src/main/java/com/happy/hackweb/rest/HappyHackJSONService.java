@@ -1,7 +1,5 @@
 package com.happy.hackweb.rest;
 
-import java.util.concurrent.LinkedBlockingQueue;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -10,7 +8,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.codehaus.jettison.json.JSONException;
-import org.json.simple.JSONObject;
+
 
 import storm.starter.spout.InAppNotificationSpout;
 import storm.starter.spout.MailNotifySpout;
@@ -63,8 +61,9 @@ public class HappyHackJSONService {
 		}
 		System.out.println("request is===" + request);
 		try {
-			org.codehaus.jettison.json.JSONObject jsonObject  = new org.codehaus.jettison.json.JSONObject(request);
+			org.codehaus.jettison.json.JSONObject jsonObject  = new JSONObject(request);
 			inAppNot.queue.put(jsonObject);
+			mailSpout.queue.put(new JSONObject(request));
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (JSONException e) {

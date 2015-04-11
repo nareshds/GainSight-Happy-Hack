@@ -105,34 +105,40 @@ public class MongoDBQuery {
 		BasicDBObject fields = new BasicDBObject();
 		fields.put("id", eventObj.get("userId"));
 		DBCursor cursor = coll.find(fields);
-		 while(cursor.hasNext()){
-			 DBObject update = cursor.next();
-			 
-			 JSONArray timeArray = (JSONArray) update.get("time");
-			 if(timeArray == null) timeArray = new JSONArray();
-			 timeArray.add(eventObj.get("time"));
-			 update.put("time", timeArray);
-			 
-			 JSONArray eventArray = (JSONArray) update.get("event");
-			 if(eventArray == null) eventArray = new JSONArray();
-			 eventArray.add(eventObj.get("event"));
-			 update.put("event", eventArray);
-			 
-			 JSONArray skuArray = (JSONArray) update.get("sku");
-			 if(skuArray == null) eventArray = new JSONArray();
-			 skuArray.add(eventObj.get("sku"));
-			 update.put("sku", skuArray);
-			 
-			 JSONArray priceArray = (JSONArray)update.get("price");
-			 if(priceArray == null) priceArray = new JSONArray();
-			 priceArray.add(eventObj.get("price"));
-			 update.put("price", priceArray);
-			 
-			 JSONArray searchArray = (JSONArray)update.get("serach string");
-			 if(searchArray == null) searchArray = new JSONArray();
-			 searchArray.add(eventObj.get("search string"));
-			 update.put("search string", searchArray);
-		 }
+		if(cursor == null){
+			DBObject dbObj =(DBObject)JSON.parse(eventObj.toString());
+			coll.insert(dbObj);
+		}else{
+			while(cursor.hasNext()){
+				 DBObject update = cursor.next();
+				 
+				 JSONArray timeArray = (JSONArray) update.get("time");
+				 if(timeArray == null) timeArray = new JSONArray();
+				 timeArray.add(eventObj.get("time"));
+				 update.put("time", timeArray);
+				 
+				 JSONArray eventArray = (JSONArray) update.get("event");
+				 if(eventArray == null) eventArray = new JSONArray();
+				 eventArray.add(eventObj.get("event"));
+				 update.put("event", eventArray);
+				 
+				 JSONArray skuArray = (JSONArray) update.get("sku");
+				 if(skuArray == null) eventArray = new JSONArray();
+				 skuArray.add(eventObj.get("sku"));
+				 update.put("sku", skuArray);
+				 
+				 JSONArray priceArray = (JSONArray)update.get("price");
+				 if(priceArray == null) priceArray = new JSONArray();
+				 priceArray.add(eventObj.get("price"));
+				 update.put("price", priceArray);
+				 
+				 JSONArray searchArray = (JSONArray)update.get("serach string");
+				 if(searchArray == null) searchArray = new JSONArray();
+				 searchArray.add(eventObj.get("search string"));
+				 update.put("search string", searchArray);
+			 }
+		}
+		
 	}
 	public void setUserCountInGeography(org.codehaus.jettison.json.JSONObject eventObj) throws Exception{
 		DBCollection coll = db.getCollection("geographywise_hit");
