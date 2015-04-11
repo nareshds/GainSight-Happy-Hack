@@ -1,5 +1,8 @@
 package storm.starter.spout;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -61,8 +64,40 @@ public class MongoDBQuery {
 		return dbObject;
 	}
 	
-	public void setEvent(String userId){
+	public void setEvent(JSONObject eventObj){
+		DBCollection coll = db.getCollection("notification_table");
 		
+		BasicDBObject fields = new BasicDBObject();
+		fields.put("id", eventObj.get("userId"));
+		DBCursor cursor = coll.find(fields);
+		 while(cursor.hasNext()){
+			 DBObject update = cursor.next();
+			 
+			 JSONArray timeArray = (JSONArray) update.get("time");
+			 if(timeArray == null) timeArray = new JSONArray();
+			 timeArray.add(eventObj.get("time"));
+			 update.put("time", timeArray);
+			 
+			 JSONArray eventArray = (JSONArray) update.get("event");
+			 if(eventArray == null) eventArray = new JSONArray();
+			 eventArray.add(eventObj.get("event"));
+			 update.put("event", eventArray);
+			 
+			 JSONArray skuArray = (JSONArray) update.get("sku");
+			 if(skuArray == null) eventArray = new JSONArray();
+			 skuArray.add(eventObj.get("sku"));
+			 update.put("sku", skuArray);
+			 
+			 JSONArray priceArray = (JSONArray)update.get("price");
+			 if(priceArray == null) priceArray = new JSONArray();
+			 priceArray.add(eventObj.get("price"));
+			 update.put("price", priceArray);
+			 
+			 JSONArray searchArray = (JSONArray)update.get("serach string");
+			 if(searchArray == null) searchArray = new JSONArray();
+			 searchArray.add(eventObj.get("search string"));
+			 update.put("search string", searchArray);
+		 }
 	}
 	/*public static void main(String args[]) throws Exception{
 		DBObject obj = new MongoDBQuery().getUser("080060cb-5111-J02S-a96e-7d6df4228cbe");
