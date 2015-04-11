@@ -24,13 +24,14 @@ public class HappyHackJSONService {
 
 	private static LocalCluster cluster = new LocalCluster();
 
+	private static InAppNotificationSpout inAppSpout = new InAppNotificationSpout();
 	private static void setTopologies() {
 		Config config = new Config();
 		config.setDebug(true);
 		config.put(Config.TOPOLOGY_MAX_SPOUT_PENDING, 1);
 
 		TopologyBuilder builder = new TopologyBuilder();
-		builder.setSpout("inApp-spout", new InAppNotificationSpout());
+		builder.setSpout("inApp-spout", inAppSpout);
 		builder.setBolt("inApp-bolt", new NotificationBolt()).shuffleGrouping("inApp-spout");
 		
 		
@@ -39,9 +40,18 @@ public class HappyHackJSONService {
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response createXmlEventsInJSON(@Context Request request) {
+	public Response createXmlEventsInJSON(String request) {
 
+		if(null == inAppSpout){
+			setTopologies();
+		}
 		System.out.println("request is===" + request);
+		
+		try {
+			inAppSpout.queue.put(request);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 
 		return Response.status(200).entity("").build();
 
