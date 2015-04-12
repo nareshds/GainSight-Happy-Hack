@@ -180,6 +180,23 @@ public class MongoDBQuery {
 			 update.put("statename", searchArray);
 		 }
 	}
+
+
+
+	public Integer getuserVistCount(String userId) {
+		DBCollection coll = db.getCollection("notification_table");
+		BasicDBObject fields = new BasicDBObject();
+		fields.put("id", userId);
+		DBCursor dbCursor = coll.find(fields);
+		DBObject dbObject = null;
+		Integer noOfVists = 0;
+		while(dbCursor.hasNext()){
+			dbObject = dbCursor.next();
+			JSONArray timeArray = (JSONArray)dbObject.get("time");
+			noOfVists = timeArray.size();
+		}
+		return noOfVists;
+	}
 	
 	/*public static void main(String args[]) throws Exception{
 		DBObject obj = new MongoDBQuery().getUser("080060cb-5111-J02S-a96e-7d6df4228cbe");
