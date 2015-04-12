@@ -1,7 +1,5 @@
 package com.happy.hackweb.rest;
 
-import java.lang.ref.WeakReference;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -9,8 +7,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import storm.starter.spout.InAppNotificationSpout;
@@ -19,6 +15,7 @@ import storm.starter.spout.MailingBolt;
 import storm.starter.spout.NotificationBolt;
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
+import backtype.storm.StormSubmitter;
 import backtype.storm.topology.TopologyBuilder;
 
 @Path("activity")
@@ -36,7 +33,8 @@ public class HappyHackJSONService {
 
 			Config config = new Config();
 			config.setDebug(false);
-			config.put(Config.TOPOLOGY_MAX_SPOUT_PENDING, 1);
+			//config.setNumWorkers(20);
+			config.put(Config.TOPOLOGY_MAX_SPOUT_PENDING, 500);
 
 			TopologyBuilder builder = new TopologyBuilder();
 			builder.setSpout("inApp-spout", inAppNot);
