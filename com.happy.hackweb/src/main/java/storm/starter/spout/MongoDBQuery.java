@@ -103,7 +103,7 @@ public class MongoDBQuery {
 		System.out.println(db.getCollectionNames());
 		try{
 		BasicDBObject fields = new BasicDBObject();
-		fields.put("id", eventObj.get("id"));
+		fields.put("id", eventObj.get("userid"));
 		DBCursor cursor = coll.find(fields);
 		if(cursor.length() == 0){
 			DBObject dbObj =(DBObject)JSON.parse(eventObj.toString());
