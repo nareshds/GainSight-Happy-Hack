@@ -3,6 +3,8 @@ package storm.starter.spout;
 
 import java.net.UnknownHostException;
 
+import org.bson.BSONObject;
+import org.codehaus.jettison.json.JSONObject;
 import org.json.simple.JSONArray;
 
 import com.mongodb.BasicDBObject;
@@ -96,18 +98,23 @@ public class MongoDBQuery {
 	
 	
 	public void setEvent(org.codehaus.jettison.json.JSONObject eventObj){
+		
 		DBCollection coll = db.getCollection("notification_table");
+		System.out.println(db.getCollectionNames());
 		try{
 		BasicDBObject fields = new BasicDBObject();
-		fields.put("id", eventObj.get("userid"));
+		fields.put("id", eventObj.get("id"));
 		DBCursor cursor = coll.find(fields);
-		if(cursor == null){
+		if(cursor.length() == 0){
 			DBObject dbObj =(DBObject)JSON.parse(eventObj.toString());
 			coll.insert(dbObj);
 		}else{
 			while(cursor.hasNext()){
 				 DBObject update = cursor.next();
-				 
+				 coll.insert((update));
+				 if(update.get("id") == null) System.out.println("is Null");
+				 else System.out.println(update);
+				 update.putAll((BSONObject) eventObj);
 				 JSONArray timeArray = (JSONArray) update.get("time");
 				 if(timeArray == null) timeArray = new JSONArray();
 				 timeArray.add(eventObj.get("time"));
@@ -133,6 +140,7 @@ public class MongoDBQuery {
 				 searchArray.add(eventObj.get("search string"));
 				 update.put("search string", searchArray);
 			 }
+			System.out.println(db.getCollectionNames());
 		}
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -199,7 +207,7 @@ public class MongoDBQuery {
 	}
 	
 	/*public static void main(String args[]) throws Exception{
-		DBObject obj = new MongoDBQuery().getUser("080060cb-5111-J02S-a96e-7d6df4228cbe");
-		System.out.println(obj.get("email")+" "+obj.get("name"));
+		new MongoDBQuery().setEvent(new JSONObject("{\"id\":\"32628068-724c-Jb0S-9efd-d9a102ae1e8f\",\"email\":\"32628068@gainsighttest.com\",\"gender\":\"F\",\"pincode\":741201,\"dob\":\"1978-04-12T15:57:24.947Z\",\"signUpDate\":\"2010-01-01T05:38:22.010Z\",\"name\":\"User - 557900\"}"));
+		System.out.println("ENd");
 	}*/
 }
