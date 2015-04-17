@@ -112,8 +112,8 @@ public class MongoDBQuery {
 			while(cursor.hasNext()){
 				 DBObject update = cursor.next();
 				 coll.insert((update));
-				 if(update.get("id") == null) System.out.println("is Null");
-				 else System.out.println(update);
+				 //if(update.get("id") == null) System.out.println("is Null");
+				 //else System.out.println(update);
 				 update.putAll((BSONObject) eventObj);
 				 JSONArray timeArray = (JSONArray) update.get("time");
 				 if(timeArray == null) timeArray = new JSONArray();
